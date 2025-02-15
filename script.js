@@ -19,8 +19,20 @@
   };
 
   function receiveEvent(eventType, eventData) {
+    // Handle both string and object data
+    let parsedData = eventData;
+    if (typeof eventData === 'string') {
+      try {
+        parsedData = JSON.parse(eventData);
+      } catch (e) {
+        console.error('Failed to parse event data:', e);
+        // If parsing fails, create an object with the raw string
+        parsedData = { response: eventData };
+      }
+    }
+
     callEventCallbacks(eventType, function (callback) {
-      callback(eventType, eventData);
+      callback(eventType, parsedData);
     });
   }
 
@@ -33,7 +45,9 @@
     for (var i = 0; i < curEventHandlers.length; i++) {
       try {
         func(curEventHandlers[i]);
-      } catch (e) { }
+      } catch (e) {
+        console.error('Error in callback:', e);
+      }
     }
   }
 
@@ -73,9 +87,10 @@
   }
 
   function onChatCompletionsResponse(eventType, eventData) {
+    console.log('Received chat completion response:', eventData);
     receiveWebViewEvent('chatCompletionResponse', {
-      error: eventData.error,
-      response: eventData.response
+      error: eventData.error || null,
+      response: eventData.response || ''
     });
   }
 
