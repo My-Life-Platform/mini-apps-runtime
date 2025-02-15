@@ -37,11 +37,22 @@
     }
   }
 
-  if (!window.Telegram) {
-    window.Telegram = {};
+  function onEvent(eventType, callback) {
+    if (eventHandlers[eventType] === undefined) {
+      eventHandlers[eventType] = [];
+    }
+    var index = eventHandlers[eventType].indexOf(callback);
+    if (index === -1) {
+      eventHandlers[eventType].push(callback);
+    }
+  };
+
+  if (!window.MyLife) {
+    window.MyLife = {};
   }
 
-  window.Telegram.WebView = {
+  window.MyLife.WebView = {
+    onEvent: onEvent,
     postEvent: postEvent,
     receiveEvent: receiveEvent,
     callEventCallbacks: callEventCallbacks
@@ -50,47 +61,37 @@
 
 // WebApp
 (function () {
-  var WebView = window.Telegram.WebView;
+  var WebView = window.MyLife.WebView;
   var WebApp = {};
 
-  function onChatCompletionResponse(eventType, eventData) {
-    if (eventData.req_id && webAppCallbacks[eventData.req_id]) {
-      var requestData = webAppCallbacks[eventData.req_id];
-      delete webAppCallbacks[eventData.req_id];
-
-      if (requestData.callback) {
-        requestData.callback(eventData.error, eventData.response);
-      }
-      receiveWebViewEvent('chatCompletionResponse', {
-        error: eventData.error,
-        response: eventData.response
-      });
-    }
+  function receiveWebViewEvent(eventType) {
+    var args = Array.prototype.slice.call(arguments);
+    eventType = args.shift();
+    WebView.callEventCallbacks('webview:' + eventType, function (callback) {
+      callback.apply(WebApp, args);
+    });
   }
 
-  if (!window.Telegram) {
-    window.Telegram = {};
+  function onChatCompletionsResponse(eventType, eventData) {
+    receiveWebViewEvent('chatCompletionResponse', {
+      error: eventData.error,
+      response: eventData.response
+    });
+  }
+
+  if (!window.MyLife) {
+    window.MyLife = {};
   }
 
   WebApp.chatCompletions = function (params, callback) {
     if (!params || !params.role || !params.message) {
-      console.error('[Telegram.WebApp] Role and message are required');
-      throw Error('WebAppChatCompletionsParamInvalid');
+      throw Error('ChatCompletionsParamInvalid');
     }
 
-    WebView.postEvent('mini_app_chat_completion', false, params);
+    WebView.postEvent('chat_completions', false, params);
   };
 
-  window.Telegram.WebApp = WebApp;
+  window.MyLife.WebApp = WebApp;
 
-  WebView.onEvent('chat_completion_response', function (eventType, eventData) {
-    if (eventData.req_id && webAppCallbacks[eventData.req_id]) {
-      var requestData = webAppCallbacks[eventData.req_id];
-      delete webAppCallbacks[eventData.req_id];
-
-      if (requestData.callback) {
-        requestData.callback(eventData.error, eventData.response);
-      }
-    }
-  });
+  WebView.onEvent('chat_completions_response', onChatCompletionsResponse);
 })();
