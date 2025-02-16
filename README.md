@@ -9,7 +9,7 @@ A JavaScript library for seamlessly integrating MiniApps with the MyLife client 
 Add the script to your HTML file's `<head>` section before any other scripts:
 
 ```html
-<script src="https://my-life-platofrm.github.io/mini-apps-runtime/script.js"></script>
+<script src="https://my-life-platform.github.io/mini-apps-runtime/script.js"></script>
 ```
 
 ## API Reference
