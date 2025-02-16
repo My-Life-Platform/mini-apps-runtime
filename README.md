@@ -1,4 +1,4 @@
-# mini-apps-script
+# mini-apps-runtime
 
 A JavaScript library for seamlessly integrating MiniApps with the MyLife client platform.
 
