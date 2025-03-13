@@ -1,6 +1,6 @@
 # mini-apps-runtime
 
-A JavaScript library for seamlessly integrating MiniApps with the MyLife client platform.
+A JavaScript library for seamlessly integrating MiniApps with the Bluerage client platform.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -9,12 +9,12 @@ A JavaScript library for seamlessly integrating MiniApps with the MyLife client 
 Add the script to your HTML file's `<head>` section before any other scripts:
 
 ```html
-<script src="https://my-life-platform.github.io/mini-apps-runtime/script.js"></script>
+<script src="https://blueragesoftware.github.io/mini-apps-runtime/script.js"></script>
 ```
 
 ## API Reference
 
-The library provides two main interfaces: `MyLife.WebApp` and `MyLife.WebView`
+The library provides two main interfaces: `Bluerage.WebApp` and `Bluerage.WebView`
 
 ### Chat Completions
 
@@ -22,13 +22,13 @@ Send messages and receive responses:
 
 ```javascript
 // Send a message
-MyLife.WebApp.chatCompletions({
+Bluerage.WebApp.chatCompletions({
   role: 'user',
   message: 'Hello, how are you?'
 });
 
 // Listen for responses
-MyLife.WebView.onEvent('chat_completions_response', (eventType, eventData) => {
+Bluerage.WebView.onEvent('chat_completions_response', (eventType, eventData) => {
   if (eventData.error) {
     console.error('Error:', eventData.error);
     return;
@@ -44,18 +44,18 @@ Here's how to use the API with React:
 ```typescript
 import { useEffect, useState } from 'react';
 
-export const useMyLife = () => {
+export const useBluerage = () => {
   const [responses, setResponses] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!window.MyLife?.WebView) {
-      setError('MyLife WebView is not initialized');
+    if (!window.Bluerage?.WebView) {
+      setError('Bluerage WebView is not initialized');
       return;
     }
 
-    window.MyLife.WebView.onEvent('chat_completions_response', (eventType, eventData) => {
+    window.Bluerage.WebView.onEvent('chat_completions_response', (eventType, eventData) => {
       setIsLoading(false);
       if (eventData.error) {
         setError(eventData.error);
@@ -68,14 +68,14 @@ export const useMyLife = () => {
   }, []);
 
   const sendMessage = async (message: string, role: string = 'user') => {
-    if (!window.MyLife?.WebApp) {
-      setError('MyLife WebApp is not initialized');
+    if (!window.Bluerage?.WebApp) {
+      setError('Bluerage WebApp is not initialized');
       return;
     }
 
     setIsLoading(true);
     try {
-      window.MyLife.WebApp.chatCompletions({ role, message });
+      window.Bluerage.WebApp.chatCompletions({ role, message });
     } catch (error) {
       setError('Error sending message');
       setIsLoading(false);
@@ -99,7 +99,7 @@ Add these type definitions to your project:
 ```typescript
 declare global {
   interface Window {
-    MyLife: {
+    Bluerage: {
       WebApp: {
         chatCompletions: (params: { role: string; message: string }) => void;
       };
@@ -117,12 +117,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- 📝 Issues: [GitHub Issues](https://github.com/my-life-platform/mini-apps-runtime/issues)
+- 📝 Issues: [GitHub Issues](https://github.com/blueragesoftware/mini-apps-runtime/issues)
 
 ## Security
 
-Found a security issue? Please report it privately to security@mylife-platform.com
+Found a security issue? Please report it privately to security@bluerage.software
 
 ---
 
-Made with ❤️ by [MyLife Platform Team](https://github.com/my-life-platform)
+Made with ❤️ by [Bluerage Software Team](https://github.com/blueragesoftware)

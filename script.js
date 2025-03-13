@@ -11,8 +11,8 @@
       eventData = '';
     }
 
-    if (window.MyLifeWebViewProxy !== undefined) {
-      MyLifeWebViewProxy.postEvent(eventType, JSON.stringify(eventData));
+    if (window.BluerageWebViewProxy !== undefined) {
+      BluerageWebViewProxy.postEvent(eventType, JSON.stringify(eventData));
     } else {
       callback({ notAvailable: true });
     }
@@ -61,11 +61,11 @@
     }
   };
 
-  if (!window.MyLife) {
-    window.MyLife = {};
+  if (!window.Bluerage) {
+    window.Bluerage = {};
   }
 
-  window.MyLife.WebView = {
+  window.Bluerage.WebView = {
     onEvent: onEvent,
     postEvent: postEvent,
     receiveEvent: receiveEvent,
@@ -75,7 +75,7 @@
 
 // WebApp
 (function () {
-  var WebView = window.MyLife.WebView;
+  var WebView = window.Bluerage.WebView;
   var WebApp = {};
 
   function receiveWebViewEvent(eventType) {
@@ -94,8 +94,8 @@
     });
   }
 
-  if (!window.MyLife) {
-    window.MyLife = {};
+  if (!window.Bluerage) {
+    window.Bluerage = {};
   }
 
   WebApp.chatCompletions = function (params, callback) {
@@ -106,7 +106,7 @@
     WebView.postEvent('chat_completions', false, params);
   };
 
-  window.MyLife.WebApp = WebApp;
+  window.Bluerage.WebApp = WebApp;
 
   WebView.onEvent('chat_completions_response', onChatCompletionsResponse);
 })();
